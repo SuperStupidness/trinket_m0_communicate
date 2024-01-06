@@ -6,3 +6,13 @@ Update 7/1/2024
     + v2 (latest): remove set led, import specific function only, added gc for
           memory checking, converted load, get model to download model function
           Still not functional due to MemoryError on get_fpdata()
+
+Note: -libserialport library can be downloaded using sudo apt install libserialport-dev (Linux Debian Based). 
+      -Flutter version of this is available at https://pub.dev/packages/flutter_libserialport
+
+libserialport download solution found here: https://stackoverflow.com/questions/73387868/libserial-is-not-detected-in-my-dart-programm
+
+
+
+
+
