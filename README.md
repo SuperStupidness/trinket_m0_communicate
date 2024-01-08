@@ -1,13 +1,13 @@
-##**Communicate to Trinket M0 via Dart**##
+## **Communicate to Trinket M0 via Dart**
 
-###Description
+### Description
 The project includes a dart file that open a serial port to the trinket m0 board using the micro USB on the board. The dart program first lists all the ports available to connect, then it establishes the connection to the selected board. After opening the connection, it probes the trinket m0 by sending '\r' through the serial port through which the trinket m0 responds. The programs will continue this call and response loop with the trinket m0 until it exit via Ctrl + C or Ctrl + D interrupt from the user.
 
 Over on the trinket m0, it uses circuitpython and continuous run code.py. Code.py is designed to talk to a fingerprint sensor using Adafruit Fingerprint library. The library is further reduced to minimize memory usage but download fingerprint function would still throw MemoryError (Maybe trinket m0 is not suitable here). Other functions are usable.
 
 The project is done in Linux (Mint) due to libserialport library being easily downloadable. Hence, the how to run section, especially step 2, does not apply to Window or MacOS.
 
-###How to Run
+### How to Run
 1. Download Dart SDK
 2. Download dependencies of dart code
 ```bash
@@ -26,7 +26,7 @@ dart communicate_trinket_m0.dart
 7. Profit
 
 
-###Updates
+### Updates
 Update 8/1/2024
 -Include lib folder with .mpy file to reduce memory usage (memory error still occurs with download_model)
 -Update README from txt to md
@@ -45,14 +45,14 @@ Update 7/1/2024
           Still not functional due to MemoryError on get_fpdata()
 
 ###Reference and Resources
-Flutter version of this is available at https://pub.dev/packages/flutter_libserialport
+Flutter version of libserialport (Dart) is available [here](https://pub.dev/packages/flutter_libserialport)
 
-libserialport download solution found here: https://stackoverflow.com/questions/73387868/libserial-is-not-detected-in-my-dart-programm
+libserialport download solution found [here](https://stackoverflow.com/questions/73387868/libserial-is-not-detected-in-my-dart-programm)
 
-Adafruit Fingerprint library (Circuitpython): https://github.com/adafruit/Adafruit_CircuitPython_Fingerprint/blob/main/adafruit_fingerprint.py
+Adafruit Fingerprint library (Circuitpython) [here](https://github.com/adafruit/Adafruit_CircuitPython_Fingerprint/blob/main/adafruit_fingerprint.py)
 
-Adafruit Fingerprint code (Circuitpython): https://learn.adafruit.com/adafruit-optical-fingerprint-sensor/circuitpython
+Adafruit Fingerprint code (Circuitpython) [here](https://learn.adafruit.com/adafruit-optical-fingerprint-sensor/circuitpython)
 
-.py to .mpy compilation tool: https://learn.adafruit.com/welcome-to-circuitpython/frequently-asked-questions
+.py to .mpy compilation tool [here](https://learn.adafruit.com/welcome-to-circuitpython/frequently-asked-questions)
 
 
