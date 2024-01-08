@@ -147,7 +147,7 @@ void main() async
 
     //Wake up trinket m0 with bad data to get menu
     //String line = stdin.readLineSync() ?? ' ';
-    Uint8List sendBuffer = stringToUint8List('\n');
+    Uint8List sendBuffer = stringToUint8List('\r');
     fingerprintPort.write(sendBuffer);
 
     //Listening for response
@@ -168,7 +168,7 @@ void main() async
                     {
                         fingerprintReader.close();
                     }
-                    Uint8List sendBuffer = stringToUint8List(line+'\n');
+                    Uint8List sendBuffer = stringToUint8List(line+'\n'+'\r');
                     fingerprintPort.write(sendBuffer);
                 }
 
