@@ -7,7 +7,7 @@ The Dart program first lists all the ports available to connect, then it establi
 
 Over on the trinket m0, it continuously run code.py. Code.py is designed to talk to a fingerprint sensor using Adafruit Fingerprint library. The library is further reduced to minimize memory usage. All functions are usable except for download_model as it throws MemoryError (trinket m0 may not be suitable here).
 
-The project is done in **Linux** (Mint) due to libserialport library being easily downloadable. Hence, the how to run section, especially step 2, **does not apply to Window or MacOS**.
+The project is done in **Linux** (Mint) due to libserialport library being easily downloadable. Hence, the how to run section, especially step 3, **does not apply to Window or MacOS**.
 
 ### How to Run
 1. Download Dart SDK
