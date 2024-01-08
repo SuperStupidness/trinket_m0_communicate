@@ -1,11 +1,13 @@
 ## **Communicate to Trinket M0 via Dart**
 
 ### Description
-The project includes a dart file that open a serial port to the trinket m0 board using the micro USB on the board. The dart program first lists all the ports available to connect, then it establishes the connection to the selected board. After opening the connection, it probes the trinket m0 by sending '\r' through the serial port through which the trinket m0 responds. The programs will continue this call and response loop with the trinket m0 until it exit via Ctrl + C or Ctrl + D interrupt from the user.
+The set up requires the computer to be connected to the trinket m0 using micro USB on the trinket board. The trinket m0 must not be connected to any serial terminal when the Dart code connects to the trinket board.
 
-Over on the trinket m0, it uses circuitpython and continuous run code.py. Code.py is designed to talk to a fingerprint sensor using Adafruit Fingerprint library. The library is further reduced to minimize memory usage but download fingerprint function would still throw MemoryError (Maybe trinket m0 is not suitable here). Other functions are usable.
+The Dart program first lists all the ports available to connect, then it establishes the connection to the selected board. After opening the connection, it probes the trinket m0 by sending '\r' through the serial port through which the trinket m0 responds. The programs will continue this call and response loop with the trinket m0 until it exit via Ctrl + C or Ctrl + D interrupt from the user.
 
-The project is done in Linux (Mint) due to libserialport library being easily downloadable. Hence, the how to run section, especially step 2, does not apply to Window or MacOS.
+Over on the trinket m0, it continuously run code.py. Code.py is designed to talk to a fingerprint sensor using Adafruit Fingerprint library. The library is further reduced to minimize memory usage. All functions are usable except for download_model as it throws MemoryError (trinket m0 may not be suitable here).
+
+The project is done in **Linux** (Mint) due to libserialport library being easily downloadable. Hence, the how to run section, especially step 2, **does not apply to Window or MacOS**.
 
 ### How to Run
 1. Download Dart SDK
@@ -44,7 +46,7 @@ Update 7/1/2024:
           memory checking, converted load, get model to download model function
           Still not functional due to MemoryError on get_fpdata()
 
-###Reference and Resources
+### Reference and Resources
 Flutter version of libserialport (Dart) is available [here](https://pub.dev/packages/flutter_libserialport)
 
 libserialport download solution found [here](https://stackoverflow.com/questions/73387868/libserial-is-not-detected-in-my-dart-programm)
