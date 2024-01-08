@@ -27,17 +27,17 @@ dart communicate_trinket_m0.dart
 
 
 ### Updates
-Update 8/1/2024
--Include lib folder with .mpy file to reduce memory usage (memory error still occurs with download_model)
--Update README from txt to md
--Add project title, description and how to run in README.md
--Remove trinket_code_v1.py and trinket_code_v2.py. Replace with code.py
--Include library normal .py code before compiling to .mpy
--Add cross compilation tool mpy-cross (require execution permission)
+Update 8/1/2024:
+- Include lib folder with .mpy file to reduce memory usage (memory error still occurs with download_model)
+- Update README from txt to md
+- Add project title, description and how to run in README.md
+- Remove trinket_code_v1.py and trinket_code_v2.py. Replace with code.py
+- Include library normal .py code before compiling to .mpy
+- Add cross compilation tool mpy-cross (require execution permission)
 
-Update 7/1/2024
--Updated dart code to latest version
--Add python code in trinket m0 (circuitpython)
+Update 7/1/2024:
+- Updated dart code to latest version
+- Add python code in trinket m0 (circuitpython)
     + v1: full functionality: enroll, find, delete, set led
           load, get model available but causes MemoryError
     + v2 (latest): remove set led, import specific function only, added gc for
