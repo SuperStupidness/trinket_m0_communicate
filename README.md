@@ -31,23 +31,23 @@ dart communicate_trinket_m0.dart
 ### Updates
 Update 9/1/2024:
 - Added script to compile python library to board. It also save code.py to board.
-- download\_template() is now enroll\_and\_send\_to_usb() (still unfished. _Soooooon_)
-- Add userGetInput function to check for valid user input in Dart
-- Add printAvailableCommands() to display commands menu
+- download\_template() is now enroll\_and\_send\_to_usb() (still unfished but _Soooooon_)
+- Added userGetInput function to check for valid user input in Dart
+- Added printAvailableCommands() to display commands menu
 - **Output/print from board is now in the form of all caps short strings (ex: OKIMAGE). If extra output is required, it will be spaced out (ex: OKSEARCH 2 100 -> Finger found at #2, confidence 100). Error codes are in the form: ERROR _\<code\_number\>_. The code number can be found in adafruit fingerprint library (circuitpython or cpp) for debug**
 - TODO: Exception handler when failing to connect to fingerprint and when failing to read template
 
 Update 8/1/2024:
-- Include lib folder with .mpy file to reduce memory usage (memory error still occurs with download_model)
-- Update README from txt to md
-- Add project title, description and how to run in README.md
-- Remove trinket_code_v1.py and trinket_code_v2.py. Replace with code.py
-- Include library normal .py code before compiling to .mpy
-- Add cross compilation tool mpy-cross (require execution permission)
+- Included lib folder with .mpy file to reduce memory usage (memory error still occurs with download_model)
+- Updated README from txt to md
+- Added project title, description and how to run in README.md
+- Removed trinket_code_v1.py and trinket_code_v2.py. Replace with code.py
+- Included library normal .py code before compiling to .mpy
+- Added cross compilation tool mpy-cross (require execution permission)
 
 Update 7/1/2024:
 - Updated dart code to latest version
-- Add python code in trinket m0 (circuitpython)
+- Added python code in trinket m0 (circuitpython)
     + v1: full functionality: enroll, find, delete, set led
           load, get model available but causes MemoryError
     + v2 (latest): remove set led, import specific function only, added gc for
