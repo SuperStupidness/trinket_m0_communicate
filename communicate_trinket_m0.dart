@@ -111,6 +111,46 @@ void setDefaultSerialPortConfig(SerialPort port)
     return;
 }
 
+String getUserInput()
+{
+    while (true)
+    {
+        String userInput = stdin.readLineSync() ?? '';
+        List<String> validInput = ['1', '2', '3', '4', '5', 'stop'];
+        for (var i in validInput)
+        {
+            if (userInput.compareTo(i) == 0)
+            {
+                return userInput;
+            }
+        }
+
+        if (userInput.compareTo('help') == 0)
+        {
+            printAvailableCommands();
+        } else
+        {
+            print('Dart: Please enter valid commands');
+            printAvailableCommands();
+        }
+
+        stdout.write('>');
+    }
+}
+
+void printAvailableCommands()
+{
+    print('Dart: Fingerprint Commands:');
+    print('\t1 -> Enroll fingerprint');
+    print('\t2 -> Identify fingerprint');
+    print('\t3 -> Delete fingerprint');
+    print('\t4 -> Show on-board fingerprint templates');
+    print('\t5 -> Enroll and send template back via USB (Not implemented yet)');
+    print('\t6 -> Upload template, get fingerprint and verify (Not implemented yet)');
+    print('\tstop -> end communication with board and exit');
+    print('\thelp -> display commands');
+    return;
+}
 
 void main() async
 {
@@ -150,10 +190,25 @@ void main() async
     Uint8List sendBuffer = stringToUint8List('\r');
     fingerprintPort.write(sendBuffer);
 
+    //Print all commands that can be send to board
+    print('');
+    printAvailableCommands();
+    print('');
+
     //Listening for response
     final fingerprintReader = SerialPortReader(fingerprintPort);
+    int ioflag = 0;
+
+    print('Displaying output from board...');
     fingerprintReader.stream.listen((data) {
         //print('Received: ${data} ${data.length}');
+        if (ioflag == 1)
+        {
+            //Receive template function here
+            ioflag = 0;
+        }
+
+
         for (var i in data)
         {
             if ((i >= 32) & (i < 127) | (i == 10))
@@ -163,10 +218,13 @@ void main() async
                 // > indicate that trinket request input
                 if ((char == '>'))
                 {
-                    String line = stdin.readLineSync() ?? '';
+                    String line = getUserInput();
                     if (line.compareTo('stop') == 0)
                     {
                         fingerprintReader.close();
+                    } else if (line.compareTo('4') == 0) //Download template
+                    {
+                        ioflag = 1;
                     }
                     Uint8List sendBuffer = stringToUint8List(line+'\n'+'\r');
                     fingerprintPort.write(sendBuffer);
