@@ -29,6 +29,14 @@ dart communicate_trinket_m0.dart
 
 
 ### Updates
+Update 9/1/2024:
+-Added script to compile python library to board. It also save code.py to board.
+-download\_template() is now enroll\_and\_send\_to_usb() (still unfished. _Soooooon_)
+-Add userGetInput function to check for valid user input in Dart
+-Add printAvailableCommands() to display commands menu
+-**Output/print from board is now in the form of all caps short strings (ex: OKIMAGE). If extra output is required, it will be spaced out (ex: OKSEARCH 2 100 -> Finger found at #2, confidence 100). Error codes are in the form: ERROR _codenumber_. The code number can be found in adafruit fingerprint library (circuitpython or cpp) for debug**
+-TODO: Exception handler when failing to connect to fingerprint and when failing to read template
+
 Update 8/1/2024:
 - Include lib folder with .mpy file to reduce memory usage (memory error still occurs with download_model)
 - Update README from txt to md
