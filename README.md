@@ -29,6 +29,12 @@ dart communicate_trinket_m0.dart
 
 
 ### Updates
+Update 15/1/2024:
+- Implement download and upload + verify template on board but **only** when the template is saved locally on board. Dart template retrieval does not work yet.
+- Add reset command (Sending Ctrl+D via USB) when board is stuck in REPL. Still very janky. Only works when Dart connects straight into REPL.
+- Attempted to implement Download template on dart but template is misssing data/gets wrong data
+- TODO: Download and upload template in dart. Solve SerialPortError on Dart when downloading and uploading templates.
+
 Update 9/1/2024:
 - Added script to compile python library to board. It also save code.py to board.
 - download\_template() is now enroll\_and\_send\_to_usb() (still unfished but _Soooooon_)
