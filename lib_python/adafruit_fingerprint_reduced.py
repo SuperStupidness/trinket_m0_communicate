@@ -143,6 +143,21 @@ class Adafruit_Fingerprint:
         self.baudrate = struct.unpack(">H", bytes(r[15:17]))[0]
         return r[0]
 
+    def set_sysparam(self, param_num: int, param_val: int) -> int:
+        """Set the system parameters (param_num)"""
+        self._send_packet([_SETSYSPARA, param_num, param_val])
+        r = self._get_packet(12)
+
+        if r[0] != OK:
+            raise RuntimeError("Command failed.")
+        if param_num == 4:
+            self.baudrate = param_val
+        elif param_num == 5:
+            self.security_level = param_val
+        elif param_num == 6:
+            self.data_packet_size = param_val
+        return r[0]
+
     def get_image(self) -> int:
         """Requests the sensor to take an image and store it memory, returns
         the packet error code or OK success"""
@@ -208,7 +223,7 @@ class Adafruit_Fingerprint:
         elif sensorbuffer == "char":
             self._send_packet([_DOWNLOAD, slot])
         else:
-            raise RuntimeError("Uknown sensor buffer type")
+            raise RuntimeError("Unknown sensor buffer type")
         if self._get_packet(12)[0] == 0:
             self._send_data(data)
             
@@ -391,8 +406,8 @@ class Adafruit_Fingerprint:
 
             packet.append(checksum >> 8)
             packet.append(checksum & 0xFF)
-
-            self._uart.write(packet)
+            # print(type(packet))
+            self._uart.write(bytearray(packet))
 
     def soft_reset(self):
         """Performs a soft reset of the sensor"""

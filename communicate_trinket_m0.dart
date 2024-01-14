@@ -111,33 +111,6 @@ void setDefaultSerialPortConfig(SerialPort port)
     return;
 }
 
-String getUserInput()
-{
-    while (true)
-    {
-        String userInput = stdin.readLineSync() ?? '';
-        List<String> validInput = ['1', '2', '3', '4', '5', 'stop'];
-        for (var i in validInput)
-        {
-            if (userInput.compareTo(i) == 0)
-            {
-                return userInput;
-            }
-        }
-
-        if (userInput.compareTo('help') == 0)
-        {
-            printAvailableCommands();
-        } else
-        {
-            print('Dart: Please enter valid commands');
-            printAvailableCommands();
-        }
-
-        stdout.write('>');
-    }
-}
-
 void printAvailableCommands()
 {
     print('Dart: Fingerprint Commands:');
@@ -149,6 +122,51 @@ void printAvailableCommands()
     print('\t6 -> Upload template, get fingerprint and verify (Not implemented yet)');
     print('\tstop -> end communication with board and exit');
     print('\thelp -> display commands');
+    return;
+}
+
+//Check for template data message and return template data
+int checkIsMessage(Uint8List data, String message)
+{
+    var messageCode = message.codeUnits;
+    int count = 0;
+
+    for (int i = 0; i < data.length; i++)
+    {
+        if (data[i] == messageCode[count])
+        {
+            count += 1;
+        } else if ((count == 1) & (data[i] != messageCode[count])) //Quick return
+        {
+            return -1;
+        }
+
+        if (count == message.length)
+        {
+            return i+2;
+        }
+    }
+
+    return -1;
+}
+
+int min(int num1, int num2)
+{
+    if (num1 < num2)
+    {
+        return num1;
+    } else
+    {
+        return num2;
+    }
+}
+
+void getTemplateData(Uint8List data, Uint8List templateBuffer, int length)
+{
+    if (length < 2048)
+    {
+        templateBuffer.setAll(length, data.sublist(0, min(data.length, 2048-length)));
+    }
     return;
 }
 
@@ -187,7 +205,7 @@ void main() async
 
     //Wake up trinket m0 with bad data to get menu
     //String line = stdin.readLineSync() ?? ' ';
-    Uint8List sendBuffer = stringToUint8List('\r');
+    Uint8List sendBuffer = stringToUint8List('\n'+'\r');
     fingerprintPort.write(sendBuffer);
 
     //Print all commands that can be send to board
@@ -197,40 +215,70 @@ void main() async
 
     //Listening for response
     final fingerprintReader = SerialPortReader(fingerprintPort);
-    int ioflag = 0;
+
+    int takeDataNextPacketFlag = 0;
+    int length = 0;
+    Uint8List templateBuffer = Uint8List(2048);
+    templateBuffer.fillRange(0, 2048, 2);
 
     print('Displaying output from board...');
     fingerprintReader.stream.listen((data) {
-        //print('Received: ${data} ${data.length}');
-        if (ioflag == 1)
+        //print('Recieved ${data} ${data.length}');
+
+        // If we are downloading a template, skip decoding to ascii
+        if ((takeDataNextPacketFlag) == 1)
         {
-            //Receive template function here
-            ioflag = 0;
+            if ((length >= 2048) | (checkIsMessage(data, 'READ') != -1))
+            {
+                takeDataNextPacketFlag = 0;
+                print('Dart: ${templateBuffer}');
+            }
+
+            getTemplateData(data, templateBuffer, length);
+            length += min(data.length, 2048 - length);
+        } else
+        {
+            // Decode data into ascii and print it
+            for (var i in data)
+            {
+                if ((i >= 32) & (i < 127) | (i == 10))
+                {
+                    String char = String.fromCharCode(i);
+                    stdout.write('${char}');
+                    // > indicate that trinket request input
+                    if ((char == '>'))
+                    {
+                        String line = stdin.readLineSync() ?? '';
+                        if (line.compareTo('stop') == 0)
+                        {
+                            fingerprintReader.close();
+                        } else if (line.compareTo('reset') == 0)
+                        {
+                            Uint8List sendBuffer = stringToUint8List('\x04'+'\r');
+                            fingerprintPort.write(sendBuffer);
+                            break;
+                        } else
+                        {
+                            Uint8List sendBuffer = stringToUint8List(line+'\n'+'\r');
+                            fingerprintPort.write(sendBuffer);
+                        }
+                    }
+                }
+            }
         }
 
-
-        for (var i in data)
+        //Template data saving
+        int dataPosition = checkIsMessage(data, '2048');
+        if (dataPosition != -1)
         {
-            if ((i >= 32) & (i < 127) | (i == 10))
-            {
-                String char = String.fromCharCode(i);
-                stdout.write('${char}');
-                // > indicate that trinket request input
-                if ((char == '>'))
-                {
-                    String line = getUserInput();
-                    if (line.compareTo('stop') == 0)
-                    {
-                        fingerprintReader.close();
-                    } else if (line.compareTo('4') == 0) //Download template
-                    {
-                        ioflag = 1;
-                    }
-                    Uint8List sendBuffer = stringToUint8List(line+'\n'+'\r');
-                    fingerprintPort.write(sendBuffer);
-                }
+            print('THIS RAN');
 
+            if (data.length > dataPosition)
+            {
+                getTemplateData(data.sublist(dataPosition), templateBuffer, length);
+                length += data.sublist(dataPosition).length;
             }
+            takeDataNextPacketFlag = 1;
         }
 
         //print('');

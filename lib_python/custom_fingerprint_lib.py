@@ -1,6 +1,8 @@
 # Write your code here :-)
+from usb_cdc import console
 from time import sleep
 import adafruit_fingerprint_reduced
+import supervisor
 
 ##################################################
 
@@ -41,6 +43,10 @@ Status string output
 # READTEMPLATE
 # FINGERHOLD
 # NUMBERREQUEST
+# PARAMDETAIL
+# SENSORINIT
+# TEMPDOWNLOAD
+# TEMPUPLOAD
 
 # Success String Output
 # OKIMAGE
@@ -49,12 +55,56 @@ Status string output
 # OKSTORAGE
 # OKDELETE
 # OKSEARCH
+# OKPARAMSET
+# OKDOWNLOAD
+# OKMATCH
+# OKUPLOAD
+
+SETPARAMFAIL = const(0x56)
+DOWNLOADFAIL = const(0x5A)
+UPLOADFAIL = const(0x5B)
+MATCHFAIL = const(0x5C)
 
 # How long the sensor waits before taking the image
 # Adjust to balance between responsiveness and accuracy.
 # Too fast -> bad image due to user finger not pressed well against sensor.
 hold_duration = 0.1
 
+def init_fingerprint_sensor(TX, RX, baudrate, security_level, data_package_size):
+    PARAM_NUM = [4, 5, 6] # Baud rate, Security Level, Data Packet Length
+    current_baudrate = 9600
+    uart = adafruit_fingerprint_reduced.UART(TX, RX, baudrate=current_baudrate)
+
+    # Test all baudrate and connect using the desired one
+    for i in range(6,13):
+        try:
+            finger = adafruit_fingerprint_reduced.Adafruit_Fingerprint(uart)
+        except RuntimeError:
+            current_baudrate = 9600*i
+            uart.baudrate = current_baudrate
+        else:
+            if set_sensor_parameter(finger, PARAM_NUM[0], int(baudrate/9600)):
+                break
+            else:
+                return False
+
+    uart.deinit()
+    uart = adafruit_fingerprint_reduced.UART(TX, RX, baudrate=baudrate)
+    finger = adafruit_fingerprint_reduced.Adafruit_Fingerprint(uart)
+
+    # Set security_level to desired level
+    if set_sensor_parameter(finger, PARAM_NUM[1], security_level):
+        pass
+    else:
+        return False
+
+    # Set data_package_size to desired data_package_size
+    if set_sensor_parameter(finger, PARAM_NUM[2], data_package_size):
+        pass
+    else:
+        return False
+
+    return finger
 
 def get_fingerprint(finger):
     """Get a finger print image, template it, and see if it matches!"""
@@ -67,7 +117,8 @@ def get_fingerprint(finger):
             print('OKIMAGE')
             break
         if i == adafruit_fingerprint_reduced.NOFINGER:
-            print_error(adafruit_fingerprint_reduced.NOFINGER)
+            # print_error(adafruit_fingerprint_reduced.NOFINGER)
+            pass
         elif i == adafruit_fingerprint_reduced.IMAGEFAIL:
             print_error(adafruit_fingerprint_reduced.IMAGEFAIL)
             return False
@@ -83,22 +134,20 @@ def get_fingerprint(finger):
     sleep(hold_duration)
 
     # Image now taken
-    while True:
-        i = finger.get_image()
-        if i == adafruit_fingerprint_reduced.OK:
-            print('OKIMAGE')
-            break
-        if i == adafruit_fingerprint_reduced.NOFINGER:
-            print_error(adafruit_fingerprint_reduced.NOFINGER)
-        elif i == adafruit_fingerprint_reduced.IMAGEFAIL:
-            print_error(adafruit_fingerprint_reduced.IMAGEFAIL)
-            return False
-        elif code == adafruit_fingerprint_reduced.PACKETRECIEVEERR:
-            print_error(adafruit_fingerprint_reduced.PACKETRECIEVEERR)
-            return False
-        else:
-            print_error(None)
-            return False
+    i = finger.get_image()
+    if i == adafruit_fingerprint_reduced.OK:
+        print('OKIMAGE')
+    elif i == adafruit_fingerprint_reduced.NOFINGER:
+        print_error(adafruit_fingerprint_reduced.NOFINGER)
+    elif i == adafruit_fingerprint_reduced.IMAGEFAIL:
+        print_error(adafruit_fingerprint_reduced.IMAGEFAIL)
+        return False
+    elif i == adafruit_fingerprint_reduced.PACKETRECIEVEERR:
+        print_error(adafruit_fingerprint_reduced.PACKETRECIEVEERR)
+        return False
+    else:
+        print_error(None)
+        return False
 
     print('TEMPLATING')
     i = finger.image_2_tz(1)
@@ -129,22 +178,20 @@ def enroll_finger(finger, location):
         print('FINGERHOLD')
         sleep(hold_duration)
 
-        while True:
-            i = finger.get_image()
-            if i == adafruit_fingerprint_reduced.OK:
-                print('OKIMAGE')
-                break
-            if i == adafruit_fingerprint_reduced.NOFINGER:
-                print_error(adafruit_fingerprint_reduced.NOFINGER)
-            elif i == adafruit_fingerprint_reduced.IMAGEFAIL:
-                print_error(adafruit_fingerprint_reduced.IMAGEFAIL)
-                return False
-            elif code == adafruit_fingerprint_reduced.PACKETRECIEVEERR:
-                print_error(adafruit_fingerprint_reduced.PACKETRECIEVEERR)
-                return False
-            else:
-                print_error(None)
-                return False
+        i = finger.get_image()
+        if i == adafruit_fingerprint_reduced.OK:
+            print('OKIMAGE')
+        elif i == adafruit_fingerprint_reduced.NOFINGER:
+            print_error(adafruit_fingerprint_reduced.NOFINGER)
+        elif i == adafruit_fingerprint_reduced.IMAGEFAIL:
+            print_error(adafruit_fingerprint_reduced.IMAGEFAIL)
+            return False
+        elif i == adafruit_fingerprint_reduced.PACKETRECIEVEERR:
+            print_error(adafruit_fingerprint_reduced.PACKETRECIEVEERR)
+            return False
+        else:
+            print_error(None)
+            return False
 
         print('TEMPLATING')
         i = finger.image_2_tz(fingerimg)
@@ -153,7 +200,7 @@ def enroll_finger(finger, location):
 
         if fingerimg == 1:
             print('REMOVEFINGER')
-            sleep(1)
+            sleep(0.1)
             while i != adafruit_fingerprint_reduced.NOFINGER:
                 i = finger.get_image()
 
@@ -174,24 +221,98 @@ def enroll_finger(finger, location):
 # Adafruit Library does not have function that request img file.
 
 
-#Circuitpython is set up so that the files are read only through its python program
-#Hence we can't save the template locally on the board via file open() and write()
-#Template is sent directly to usb. Connection must be stable while doing so
+# Circuitpython is set up so that the files are read only through its python program
+# Hence we can't save the template locally on the board via file open() and write()
+# Template is sent directly to usb. Connection must be stable while doing so
 def enroll_and_send_usb(finger, location: int = 1):
     """Take a 2 finger images and template it, then store it in a file"""
     if enroll_finger(finger, location):
-        print("Downloading template...")
-        data = finger.get_fpdata("char", 1)
-        print("Data length received: " + str(len(data)))
-        return data
+        print("TEMPDOWNLOAD")
+        try:
+            data = finger.get_fpdata("char", 1)
+        except RuntimeError:
+            print_error(DOWNLOADFAIL)
+            return False
+        else:
+            print("OKDOWNLOAD {}".format(len(data)))
+            return data
     else:
-        return None
+        return False
 
-def fingerprint_check_from_file(finger):
-    data = input()
-    finger.send_fpdata(list(bytearray(data)), "char", 2)
+# Upload template data ("char" type) to sensor and take a fingerprint to compare
+def upload_and_compare_with_fingerprint(finger, data):
+    # Copied from get_fingerprint except for the search part
+    print('FINGERREQUEST')
+
+    # User presses finger
+    while True:
+        i = finger.get_image()
+        if i == adafruit_fingerprint_reduced.OK:
+            print('OKIMAGE')
+            break
+        if i == adafruit_fingerprint_reduced.NOFINGER:
+            # print_error(adafruit_fingerprint_reduced.NOFINGER)
+            pass
+        elif i == adafruit_fingerprint_reduced.IMAGEFAIL:
+            print_error(adafruit_fingerprint_reduced.IMAGEFAIL)
+            return False
+        elif code == adafruit_fingerprint_reduced.PACKETRECIEVEERR:
+            print_error(adafruit_fingerprint_reduced.PACKETRECIEVEERR)
+            return False
+        else:
+            print_error(None)
+            return False
+
+    # User holds finger
+    print('FINGERHOLD')
+    sleep(hold_duration)
+
+    # Image now taken
+    i = finger.get_image()
+    if i == adafruit_fingerprint_reduced.OK:
+        print('OKIMAGE')
+    elif i == adafruit_fingerprint_reduced.NOFINGER:
+        print_error(adafruit_fingerprint_reduced.NOFINGER)
+    elif i == adafruit_fingerprint_reduced.IMAGEFAIL:
+        print_error(adafruit_fingerprint_reduced.IMAGEFAIL)
+        return False
+    elif i == adafruit_fingerprint_reduced.PACKETRECIEVEERR:
+        print_error(adafruit_fingerprint_reduced.PACKETRECIEVEERR)
+        return False
+    else:
+        print_error(None)
+        return False
+
+    print('TEMPLATING')
+    i = finger.image_2_tz(1)
+    if not check_return_code_template(i):
+        return False
+
+    try:
+        finger.send_fpdata(data, "char", 2)
+    except RuntimeError:
+        print_error(UPLOADFAIL)
+        return False
+
     i = finger.compare_templates()
+    if i == adafruit_fingerprint_reduced.OK:
+        print("OKMATCH")
+        return True
+    elif i == adafruit_fingerprint_reduced.NOMATCH:
+        print_error(MATCHFAIL)
 
+    return False
+
+def set_sensor_parameter(finger, param_num, param_val):
+    try:
+        res = finger.set_sysparam(param_num, param_val)
+    except:
+        print_error(SETPARAMFAIL)
+    else:
+        print('OKPARAMSET {} {}'.format(param_num, param_val))
+        return True
+
+    return False
 
 def show_template(finger):
     if finger.read_templates() != adafruit_fingerprint_reduced.OK:
@@ -242,7 +363,6 @@ def check_return_code_model(code):
         print_error(None)
         return False
 
-
 def check_return_code_storage(code):
     if code == adafruit_fingerprint_reduced.OK:
         print('OKSTORAGE')
@@ -259,7 +379,6 @@ def check_return_code_storage(code):
     else:
         print_error(None)
         return False
-
 
 def check_return_code_search(code):
     if code == adafruit_fingerprint_reduced.OK:
@@ -301,18 +420,6 @@ def erase_model(finger, location):
 
 ##################################################
 
-
-def get_num():
-    """Use input() to get a valid number from 1 to 127. Retry till success!"""
-    i = 0
-    while (i > 127) or (i < 1):
-        try:
-            #print("Enter ID # from 1-127", end='')
-            print('NUMBERREQUEST')
-            i = int(input('>').strip())
-        except ValueError:
-            pass
-    return i
 
 def print_error(error_code):
     if error_code is None:
