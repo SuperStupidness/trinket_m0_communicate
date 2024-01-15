@@ -2,6 +2,7 @@ from usb_cdc import console
 from board import GP0, GP1 #TX, RX
 import custom_fingerprint_lib as finger_lib
 from gc import collect
+from binascii import hexlify
 
 NUMARGUMENT = const(0x57)
 LOCATIONVAL = const(0x58)
@@ -72,11 +73,11 @@ while True:
         finger_template = finger_lib.enroll_and_send_usb(finger)
         collect()
         if finger_template is not False:
-            for i in range(0,2048,128):
-                console.write(bytes(finger_template[i:i+128]))
+            console.write(bytes(finger_template))
 
+        print('\n') #Indicate end of data template
+        finger_lib.sleep(1)
         print(finger_template)
-
     elif commands == '5':
         finger_lib.upload_and_compare_with_fingerprint(finger, finger_template_test)
     else:

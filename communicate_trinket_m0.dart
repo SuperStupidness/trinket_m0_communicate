@@ -143,7 +143,7 @@ int checkIsMessage(Uint8List data, String message)
 
         if (count == message.length)
         {
-            return i+2;
+            return i-count+1;
         }
     }
 
@@ -205,7 +205,7 @@ void main() async
 
     //Wake up trinket m0 with bad data to get menu
     //String line = stdin.readLineSync() ?? ' ';
-    Uint8List sendBuffer = stringToUint8List('\n'+'\r');
+    Uint8List sendBuffer = stringToUint8List('\r'+'\n');
     fingerprintPort.write(sendBuffer);
 
     //Print all commands that can be send to board
@@ -228,14 +228,22 @@ void main() async
         // If we are downloading a template, skip decoding to ascii
         if ((takeDataNextPacketFlag) == 1)
         {
-            if ((length >= 2048) | (checkIsMessage(data, 'READ') != -1))
+            int endIndex = checkIsMessage(data, '\r\n\r\n');
+            if ((length >= 2048))
             {
                 takeDataNextPacketFlag = 0;
                 print('Dart: ${templateBuffer}');
+            } else if (endIndex != -1)
+            {
+                getTemplateData(data.sublist(0, endIndex), templateBuffer, length);
+                length += min(data.sublist(0, endIndex).length, 2048 - length);
+                takeDataNextPacketFlag = 0;
+                print('Dart: ${templateBuffer}');
+            } else
+            {
+                getTemplateData(data, templateBuffer, length);
+                length += min(data.length, 2048 - length);
             }
-
-            getTemplateData(data, templateBuffer, length);
-            length += min(data.length, 2048 - length);
         } else
         {
             // Decode data into ascii and print it
@@ -254,12 +262,12 @@ void main() async
                             fingerprintReader.close();
                         } else if (line.compareTo('reset') == 0)
                         {
-                            Uint8List sendBuffer = stringToUint8List('\x04'+'\r');
+                            Uint8List sendBuffer = stringToUint8List('\x04'+'\r'+'\n');
                             fingerprintPort.write(sendBuffer);
                             break;
                         } else
                         {
-                            Uint8List sendBuffer = stringToUint8List(line+'\n'+'\r');
+                            Uint8List sendBuffer = stringToUint8List(line+'\r'+'\n');
                             fingerprintPort.write(sendBuffer);
                         }
                     }
@@ -272,12 +280,6 @@ void main() async
         if (dataPosition != -1)
         {
             print('THIS RAN');
-
-            if (data.length > dataPosition)
-            {
-                getTemplateData(data.sublist(dataPosition), templateBuffer, length);
-                length += data.sublist(dataPosition).length;
-            }
             takeDataNextPacketFlag = 1;
         }
 
