@@ -10,25 +10,34 @@ Over on the trinket m0, it continuously run code.py. Code.py is designed to talk
 The project is done in **Linux** (Mint) due to libserialport library being easily downloadable. Hence, the how to run section, especially step 3, **does not apply to Window or MacOS**.
 
 ### How to Run
+
 1. Download Dart SDK
-2. Download dependencies of dart code
-```bash
-dart pub upgrade
-```
-3. Download libserialport (C) library using 
-```bash
-sudo apt install libserialport-dev
-```
-4. Copy code.py and lib folder into trinket m0
-5. Make sure trinket m0 is not in REPL, else press reset button or use Mu editor to input Ctrl + D to rerun the code
-6. Run the dart code
-```bash
-dart communicate_trinket_m0.dart
-```
-7. Profit
+2. Download the project files in [Github](https://github.com/SuperStupidness/trinket_m0_communicate/tree/main)
+3. Navigate to the folder and download dependencies of dart code
+
+            dart pub upgrade
+
+4.  Download libserialport (C) library using
+
+            sudo apt install libserialport-dev
+
+5.  Copy code.py and lib folder into Trinket M0/Raspberry Pi Pico
+6.  Run the dart code
+
+            dart communicate_trinket_m0.dart
+
+7.  (Optional) If the Dart code shows that the board is in REPL when first booted up, use command 'reset' by typing it in the terminal to restart the python code.
 
 
 ### Updates
+Updates 18/1/2024:
+- Download and Upload template is now functional. Template is stored in templateBuffer variable in Dart which can be written to a file or save in a database.
+- Implement interrupt finger request by Esc then Enter
+- Implement clear template library function by entering 6
+- Added docs folder for Github Page which can be found [here](https://superstupidness.github.io/trinket_m0_communicate/)
+- Enroll and Delete commands now require two numbers seperated by a space, >Command Location. No more Command -> Location.
+- Fix sending Error 2 while waiting for finger
+
 Update 15/1/2024:
 - Implement download and upload + verify template on board but **only** when the template is saved locally on board. Dart template retrieval does not work yet.
 - Add reset command (Sending Ctrl+D via USB) when board is stuck in REPL. Still very janky. Only works when Dart connects straight into REPL.

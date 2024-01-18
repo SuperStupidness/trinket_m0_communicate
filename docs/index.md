@@ -1,4 +1,4 @@
-# Communicate to Trinket M0/Raspberry Pi Pico via Dart Documentation
+# Introduction
 
 ## About the Project
 This project involves communicating from a computer to a Adafruit Trinket M0 board using Dart. The board is connected to our computer using the Micro USB port.
