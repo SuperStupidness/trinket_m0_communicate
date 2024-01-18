@@ -118,7 +118,10 @@ def get_fingerprint(finger):
             break
         if i == adafruit_fingerprint_reduced.NOFINGER:
             # print_error(adafruit_fingerprint_reduced.NOFINGER)
-            pass
+            if supervisor.runtime.serial_bytes_available:
+                data = input().strip()
+                if data == 'CANCEL':
+                    return False
         elif i == adafruit_fingerprint_reduced.IMAGEFAIL:
             print_error(adafruit_fingerprint_reduced.IMAGEFAIL)
             return False
@@ -128,6 +131,8 @@ def get_fingerprint(finger):
         else:
             print_error(None)
             return False
+
+
 
     # User holds finger
     print('FINGERHOLD')
@@ -171,8 +176,14 @@ def enroll_finger(finger, location):
             print('FINGERREQUEST')
 
         # User presses finger
-        while finger.get_image() != adafruit_fingerprint_reduced.OK:
-            pass
+        i = finger.get_image()
+        while i != adafruit_fingerprint_reduced.OK:
+            if supervisor.runtime.serial_bytes_available and i == adafruit_fingerprint_reduced.NOFINGER:
+                data = input().strip()
+                if data == 'CANCEL':
+                    return False
+
+            i = finger.get_image()
 
         # User holds finger to get a good image
         print('FINGERHOLD')
@@ -252,7 +263,10 @@ def upload_and_compare_with_fingerprint(finger, data):
             break
         if i == adafruit_fingerprint_reduced.NOFINGER:
             # print_error(adafruit_fingerprint_reduced.NOFINGER)
-            pass
+            if supervisor.runtime.serial_bytes_available:
+                data = input().strip()
+                if data == 'CANCEL':
+                    return False
         elif i == adafruit_fingerprint_reduced.IMAGEFAIL:
             print_error(adafruit_fingerprint_reduced.IMAGEFAIL)
             return False
@@ -368,7 +382,7 @@ def check_return_code_storage(code):
         print('OKSTORAGE')
         return True
     elif code == adafruit_fingerprint_reduced.BADLOCATION:
-        print(adafruit_fingerprint_reduced.BADLOCATION)
+        print_error(adafruit_fingerprint_reduced.BADLOCATION)
         return False
     elif code == adafruit_fingerprint_reduced.FLASHERR:
         print_error(adafruit_fingerprint_reduced.FLASHERR)
@@ -399,7 +413,7 @@ def check_return_code_delete(code):
         print('OKDELETE')
         return True
     elif code == adafruit_fingerprint_reduced.BADLOCATION:
-        print(adafruit_fingerprint_reduced.BADLOCATION)
+        print_error(adafruit_fingerprint_reduced.BADLOCATION)
         return False
     elif code == adafruit_fingerprint_reduced.FLASHERR:
         print_error(adafruit_fingerprint_reduced.FLASHERR)

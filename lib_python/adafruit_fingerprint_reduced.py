@@ -276,6 +276,12 @@ class Adafruit_Fingerprint:
         self.confidence = struct.unpack(">H", bytes(r[1:3]))
         return r[0]
 
+    def empty_library(self) -> int:
+        """Requests the sensor to delete all models from flash memory.
+        Returns the packet error code or OK success"""
+        self._send_packet([_EMPTY])
+        return self._get_packet(12)[0]
+
     ##################################################
 
     def _get_packet(self, expected: int) -> List[int]:

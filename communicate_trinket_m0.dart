@@ -1,6 +1,9 @@
 import 'package:libserialport/libserialport.dart';
 import 'dart:io';
+import 'dart:async';
 import 'dart:typed_data';
+
+final TEMPLATEBUFFERSIZE = 4096;
 
 ///List all serail port available connected to device
 ///Return number of port connected
@@ -117,11 +120,11 @@ void printAvailableCommands()
     print('\t1 -> Enroll fingerprint');
     print('\t2 -> Identify fingerprint');
     print('\t3 -> Delete fingerprint');
-    print('\t4 -> Show on-board fingerprint templates');
-    print('\t5 -> Enroll and send template back via USB (Not implemented yet)');
-    print('\t6 -> Upload template, get fingerprint and verify (Not implemented yet)');
+    print('\t4 -> Enroll and send template back via USB');
+    print('\t5 -> Upload template, get fingerprint and verify');
+    print('\t6 -> Clear all templates in sensor\'s library');
     print('\tstop -> end communication with board and exit');
-    print('\thelp -> display commands');
+    print('\treset -> Rerun code python on board (Send Ctrl + D command)');
     return;
 }
 
@@ -163,9 +166,9 @@ int min(int num1, int num2)
 
 void getTemplateData(Uint8List data, Uint8List templateBuffer, int length)
 {
-    if (length < 2048)
+    if (length < TEMPLATEBUFFERSIZE)
     {
-        templateBuffer.setAll(length, data.sublist(0, min(data.length, 2048-length)));
+        templateBuffer.setAll(length, data.sublist(0, min(data.length, TEMPLATEBUFFERSIZE)));
     }
     return;
 }
@@ -216,72 +219,121 @@ void main() async
     //Listening for response
     final fingerprintReader = SerialPortReader(fingerprintPort);
 
+    // Template extraction variables
     int takeDataNextPacketFlag = 0;
     int length = 0;
-    Uint8List templateBuffer = Uint8List(2048);
-    templateBuffer.fillRange(0, 2048, 2);
+    int removeFirstByte = 0;
+    Uint8List templateBuffer = Uint8List(TEMPLATEBUFFERSIZE);
+    templateBuffer.fillRange(0, TEMPLATEBUFFERSIZE, 2);
+
+    // Interrupt taking fingerprint flag
+    int interruptFingerFlag = -1;
+    final interruptCheckStream = stdin.asBroadcastStream();
+    final interruptStreamController = StreamController.broadcast();
+    interruptStreamController.addStream(interruptCheckStream);
+    final subscription = interruptCheckStream.listen((data) {
+        if (data[0] == 27) // 27 is Esc key
+        {
+            //print('Cancelling taking fingerprint...');
+            Uint8List sendBuffer = stringToUint8List('CANCEL'+'\n'+'\r');
+            fingerprintPort.write(sendBuffer);
+        }
+    });
+    subscription.pause();
 
     print('Displaying output from board...');
-    fingerprintReader.stream.listen((data) {
-        //print('Recieved ${data} ${data.length}');
-
-        // If we are downloading a template, skip decoding to ascii
-        if ((takeDataNextPacketFlag) == 1)
-        {
-            int endIndex = checkIsMessage(data, '\r\n\r\n');
-            if ((length >= 2048))
-            {
-                takeDataNextPacketFlag = 0;
-                print('Dart: ${templateBuffer}');
-            } else if (endIndex != -1)
-            {
-                getTemplateData(data.sublist(0, endIndex), templateBuffer, length);
-                length += min(data.sublist(0, endIndex).length, 2048 - length);
-                takeDataNextPacketFlag = 0;
-                print('Dart: ${templateBuffer}');
-            } else
-            {
-                getTemplateData(data, templateBuffer, length);
-                length += min(data.length, 2048 - length);
-            }
-        } else
-        {
+    fingerprintReader.stream.listen((data) async {
+         //print('Recieved ${data} ${data.length}');
             // Decode data into ascii and print it
-            for (var i in data)
+        for (var i in data)
+        {
+            if ((i >= 32) & (i < 127) | (i == 10))
             {
-                if ((i >= 32) & (i < 127) | (i == 10))
+                String char = String.fromCharCode(i);
+                stdout.write('${char}');
+                // > indicate that trinket request input. Input section
+                if ((char == '>'))
                 {
-                    String char = String.fromCharCode(i);
-                    stdout.write('${char}');
-                    // > indicate that trinket request input
-                    if ((char == '>'))
+                    String line = stdin.readLineSync() ?? '';
+                    if (line.compareTo('stop') == 0)
                     {
-                        String line = stdin.readLineSync() ?? '';
-                        if (line.compareTo('stop') == 0)
-                        {
-                            fingerprintReader.close();
-                        } else if (line.compareTo('reset') == 0)
-                        {
-                            Uint8List sendBuffer = stringToUint8List('\x04'+'\r'+'\n');
-                            fingerprintPort.write(sendBuffer);
-                            break;
-                        } else
-                        {
-                            Uint8List sendBuffer = stringToUint8List(line+'\r'+'\n');
-                            fingerprintPort.write(sendBuffer);
-                        }
+                        subscription.cancel();
+                        fingerprintReader.close();
+                        exit(0);
+                    } else if (line.compareTo('reset') == 0)
+                    {
+                        Uint8List sendBuffer = stringToUint8List('\x04'+'\r');
+                        fingerprintPort.write(sendBuffer);
+                        break;
+                    } else if (line.compareTo('5') == 0)
+                    {
+                        Uint8List sendBuffer = stringToUint8List(line+'\n'+'\r');
+                        fingerprintPort.write(sendBuffer);
+                        fingerprintPort.drain();
+                        fingerprintPort.write(templateBuffer);
+                        fingerprintPort.drain();
+                        sendBuffer = stringToUint8List('\n'+'\r');
+                        fingerprintPort.write(sendBuffer);
+                        //print(templateBuffer);
+
+                    } else if (line.compareTo('help') == 0)
+                    {
+                        printAvailableCommands();
+                        stdout.write('>');
+                    } else
+                    {
+                        Uint8List sendBuffer = stringToUint8List(line+'\n'+'\r');
+                        fingerprintPort.write(sendBuffer);
                     }
+                }
+
+                // Other data extraction/function section
+                // Save template data
+                if ((takeDataNextPacketFlag == 1) & (removeFirstByte == 0))
+                {
+                    if (length == 4096)
+                    {
+                        takeDataNextPacketFlag = 0;
+                        // print('Dart:');
+                        // print(String.fromCharCodes(templateBuffer.toList()));
+                    } else if (i != 39) // Not take '
+                    {
+                        templateBuffer[length] = i;
+                        length += 1;
+                    }
+                } else if ((removeFirstByte == 1) & (i == 98)) //98 is 'b'
+                {
+                    removeFirstByte = 0;
                 }
             }
         }
 
-        //Template data saving
-        int dataPosition = checkIsMessage(data, '2048');
-        if (dataPosition != -1)
+        // Template data saving
+        int dataPosition = checkIsMessage(data, 'OKDOWNLOAD');
+        if ((dataPosition != -1) & (takeDataNextPacketFlag == 0))
         {
-            print('THIS RAN');
+
             takeDataNextPacketFlag = 1;
+            removeFirstByte = 1;
+            length = 0;
         }
+
+        // Cancle taking fingerprint if requested
+        if (checkIsMessage(data, 'FINGERREQUEST') != -1)
+        {
+            if (subscription.isPaused)
+            {
+                subscription.resume();
+            }
+        } else if ((checkIsMessage(data, 'OKIMAGE') != -1) | (checkIsMessage(data, 'READTEMPLATE') != -1))
+        {
+            if (!subscription.isPaused)
+            {
+                subscription.pause();
+            }
+        }
+
+        fingerprintPort.flush(SerialPortBuffer.output);
 
         //print('');
     });
