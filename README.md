@@ -35,7 +35,7 @@ Updates 18/1/2024:
 - Implement interrupt finger request by Esc then Enter
 - Implement clear template library function by entering 6
 - Added docs folder for Github Page which can be found [here](https://superstupidness.github.io/trinket_m0_communicate/)
-- Enroll and Delete commands now require two numbers seperated by a space, >Command Location. No more Command -> Location.
+- **Enroll and Delete commands now require two numbers seperated by a space, >Command Location. No more Command -> Location.**
 - Fix sending Error 2 while waiting for finger
 
 Update 15/1/2024:
