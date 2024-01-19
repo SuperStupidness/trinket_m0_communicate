@@ -378,6 +378,24 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#status-printing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Status Printing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#success-code-printing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Success Code Printing
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -536,6 +554,24 @@
   <a href="#error-printing" class="md-nav__link">
     <span class="md-ellipsis">
       Error Printing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#status-printing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Status Printing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#success-code-printing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Success Code Printing
     </span>
   </a>
   
@@ -798,6 +834,116 @@ READTEMPLATE 0      #No template in sensor
 <td>WRONGCOMMAND</td>
 <td>0x59 (59)</td>
 <td>Command does not exist</td>
+</tr>
+</tbody>
+</table>
+<h3 id="status-printing">Status Printing</h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FINGERREQUEST</td>
+<td>Request finger to be placed on sensor</td>
+</tr>
+<tr>
+<td>FINGERHOLD</td>
+<td>Request finger to be held on sensor</td>
+</tr>
+<tr>
+<td>TEMPLATING</td>
+<td>Converting image to template</td>
+</tr>
+<tr>
+<td>SEARCHING</td>
+<td>Searching for matching model in sensor's library/flash</td>
+</tr>
+<tr>
+<td>REMOVEFINGER</td>
+<td>Request finger to be removed off the sensor</td>
+</tr>
+<tr>
+<td>CREATEMODEL</td>
+<td>Creating model from template to be stored</td>
+</tr>
+<tr>
+<td>STOREMODEL</td>
+<td>Storing model in sensor's library</td>
+</tr>
+<tr>
+<td>READTEMPLATE</td>
+<td>Reading all the model/template stored in the sensor</td>
+</tr>
+<tr>
+<td>PARAMDETAIL</td>
+<td>Printing current configuration for sensor (baud rate, security level, data package size)</td>
+</tr>
+<tr>
+<td>SENSORINIT</td>
+<td>Establishing connection with sensor and setting sensor's configuration</td>
+</tr>
+<tr>
+<td>TEMPDOWNLOAD</td>
+<td>Downloading template from sensor</td>
+</tr>
+<tr>
+<td>TEMPUPLOAD</td>
+<td>Uploading template from sensor</td>
+</tr>
+</tbody>
+</table>
+<h3 id="success-code-printing">Success Code Printing</h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>OKIMAGE</td>
+<td>Image taken successfully</td>
+</tr>
+<tr>
+<td>OKTEMPLATE</td>
+<td>Image converted to template successfully</td>
+</tr>
+<tr>
+<td>OKMODEL</td>
+<td>Create model is successful</td>
+</tr>
+<tr>
+<td>OKSTORAGE</td>
+<td>Model stored successfully in sensor's library</td>
+</tr>
+<tr>
+<td>OKDELETE</td>
+<td>Model deleted successfully</td>
+</tr>
+<tr>
+<td>OKSEARCH</td>
+<td>Template is identified. Location and confidence level is printed in that order</td>
+</tr>
+<tr>
+<td>OKPARAMSET</td>
+<td>Parameter set successfully for sensor</td>
+</tr>
+<tr>
+<td>OKDOWNLOAD</td>
+<td>Download template from sensor successfully. Number of byte is also printed</td>
+</tr>
+<tr>
+<td>OKMATCH</td>
+<td>Uploaded template matches with fingerprint.</td>
+</tr>
+<tr>
+<td>OKUPLOAD</td>
+<td>Template uploaded to sensor successfully</td>
 </tr>
 </tbody>
 </table>
