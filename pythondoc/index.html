@@ -640,7 +640,7 @@ Press any key to enter the REPL. Use CTRL-D to reload.
 </ul>
 <h3 id="codepy-api">code.py API</h3>
 <h4 id="command-1-enroll-fingerprint-in-slot-argument">Command '1' - Enroll fingerprint in slot "Argument"</h4>
-<p>Input: &gt;1 [slot number] or sending "1 [slot number]\n\r" through serial</p>
+<p>Input: &gt;1 [slot number] or send "1 [slot number]\n\r" through serial</p>
 <p>Output:</p>
 <pre><code>&gt;1 1              #Enroll finger (command 1) in slot 1
 1 1
@@ -663,7 +663,7 @@ READTEMPLATE 1 2  #Display all models stored on sensor by listing its slot. Curr
 &gt;                 #Command/Input request
 </code></pre>
 <h4 id="command-2-identify-fingerprint">Command '2' - Identify fingerprint</h4>
-<p>Input: &gt;2 or sending "2\n\r" through serial</p>
+<p>Input: &gt;2 or send "2\n\r" through serial</p>
 <p>Output:</p>
 <pre><code>READTEMPLATE 1 2
 &gt;2                #Identify finger
@@ -678,7 +678,7 @@ READTEMPLATE 1 2
 &gt;
 </code></pre>
 <h4 id="command-3-delete-fingerprint">Command '3' - Delete fingerprint</h4>
-<p>Input: &gt;3 [slot number] or sending "3 [slot number]\n\r" through serial</p>
+<p>Input: &gt;3 [slot number] or send "3 [slot number]\n\r" through serial</p>
 <p>Output:</p>
 <pre><code>READTEMPLATE 1 2
 &gt;3 1              #Delete model in slot 1
@@ -687,7 +687,7 @@ READTEMPLATE 2
 &gt;
 </code></pre>
 <h4 id="command-4-download-template-to-computer">Command '4' - Download template to computer</h4>
-<p>Input: &gt;4 or sending "4\n\r" through serial</p>
+<p>Input: &gt;4 or send "4\n\r" through serial</p>
 <p>Output:</p>
 <pre><code>&gt;4
 4                  #Download template into Dart code
