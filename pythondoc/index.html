@@ -369,6 +369,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#error-printing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Error Printing
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -520,6 +529,15 @@
         
       </ul>
     </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#error-printing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Error Printing
+    </span>
+  </a>
   
 </li>
         
@@ -685,6 +703,104 @@ READTEMPLATE 0      #No template in sensor
 &gt;
 </code></pre>
 <p>Note: 0 does not mean there exist a model in slot 0. Slot 0 does not exist and is not a valid slot.</p>
+<h3 id="error-printing">Error Printing</h3>
+<p><strong>Format</strong>: ERROR [error number]</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Hex Code (Decimal)</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PACKETRIEVEERR</td>
+<td>0x01 (1)</td>
+<td>Trouble communicating with sensor</td>
+</tr>
+<tr>
+<td>NOFINGER</td>
+<td>0x02 (2)</td>
+<td>Finger is not pressed on sensor when taking image</td>
+</tr>
+<tr>
+<td>IMAGEFAIL</td>
+<td>0x03 (3)</td>
+<td>Imaging error</td>
+</tr>
+<tr>
+<td>IMAGEMESS</td>
+<td>0x06 (6)</td>
+<td>Image is too messy. Cannot extract features</td>
+</tr>
+<tr>
+<td>FEATUREFAIL</td>
+<td>0x07 (7)</td>
+<td>Failed to identify fingerprint feature</td>
+</tr>
+<tr>
+<td>NOTFOUND</td>
+<td>0x09 (9)</td>
+<td>Fingerprint model not in sensor's library</td>
+</tr>
+<tr>
+<td>ENROLLMISMATCH</td>
+<td>0x0A (10)</td>
+<td>Fingerprint is not the same when taken twice. Cannot generate model</td>
+</tr>
+<tr>
+<td>BADLOCATION</td>
+<td>0x0B (11)</td>
+<td>Invalid location for operation</td>
+</tr>
+<tr>
+<td>UPLOADFAIL</td>
+<td>0x5B (91)</td>
+<td>Fail to upload template to sensor</td>
+</tr>
+<tr>
+<td>INVALIDIMAGE</td>
+<td>0x15 (21)</td>
+<td>Image taken is not a fingerprint. Failed to extract features</td>
+</tr>
+<tr>
+<td>FLASHERR</td>
+<td>0x18 (24)</td>
+<td>Model could not be written to flash memory</td>
+</tr>
+<tr>
+<td>SETPARAMFAIL</td>
+<td>0x56 (86)</td>
+<td>Cannot change sensor's parameter settings: baud rate, security level, data package size</td>
+</tr>
+<tr>
+<td>DOWNLOADFAIL</td>
+<td>0x5A (90)</td>
+<td>Cannot download model from sensor</td>
+</tr>
+<tr>
+<td>MATCHFAIL</td>
+<td>0x5C (92)</td>
+<td>Fingerprint does not match with uploaded template</td>
+</tr>
+<tr>
+<td>NUMARGUMENT</td>
+<td>0x57 (87)</td>
+<td>Wrong number of arguments</td>
+</tr>
+<tr>
+<td>LOCATIONVAL</td>
+<td>0x58 (88)</td>
+<td>Location/slot number argument is invalid. Range: 1-120</td>
+</tr>
+<tr>
+<td>WRONGCOMMAND</td>
+<td>0x59 (59)</td>
+<td>Command does not exist</td>
+</tr>
+</tbody>
+</table>
 
 
 
