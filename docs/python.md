@@ -59,11 +59,11 @@ when prompted with ">" from the Python code. The code python receive this by cal
 
 #### Command '1' - Enroll fingerprint in slot "Argument"
 
-Input: >1 "slot number"
+Input: >1 [slot number] or sending "1 [slot number]\n\r" through serial
 
 Output:
 
-    >1 1
+    >1 1              #Enroll finger (command 1) in slot 1
     1 1
     FINGERREQUEST     #Request User to press finger on sensor
     FINGERHOLD        #Request User to hold finger on sensor
@@ -85,12 +85,12 @@ Output:
 
 #### Command '2' - Identify fingerprint
 
-Input: >2
+Input: >2 or sending "2\n\r" through serial
 
 Output:
 
     READTEMPLATE 1 2
-    >2
+    >2                #Identify finger
     FINGERREQUEST     #Request User to press finger on sensor
     FINGERHOLD        #Request User to hold finger on sensor
     OKIMAGE           #Image taken successfully
@@ -100,3 +100,81 @@ Output:
     OKSEARCH 1 100    #Model found in slot 1 with confidence 100
     READTEMPLATE 1 2
     >
+
+#### Command '3' - Delete fingerprint
+
+Input: >3 [slot number] or sending "3 [slot number]\n\r" through serial
+
+Output:
+
+    READTEMPLATE 1 2
+    >3 1              #Delete model in slot 1
+    OKDELETE          #Model deleted successfully
+    READTEMPLATE 2
+    >
+
+#### Command '4' - Download template to computer
+
+Input: >4 or sending "4\n\r" through serial
+
+Output:
+
+    >4
+    4                  #Download template into Dart code
+    FINGERREQUEST      #Same steps as enroll. Default to slot 1.
+    FINGERHOLD
+    OKIMAGE
+    TEMPLATING
+    OKTEMPLATE
+    REMOVEFINGER
+    FINGERREQUEST
+    FINGERHOLD
+    OKIMAGE
+    TEMPLATING
+    OKTEMPLATE
+    CREATEMODEL
+    OKMODEL
+    STOREMODEL
+    OKSTORAGE
+    TEMPDOWNLOAD       #Start downloading template of enrolled fingerprint
+    OKDOWNLOAD 2048    #Template downloaded successfully sensor. Length: 2048 bytes
+    b'46704c...ffff1f29d8ff40'  #Hex data printed to serial port as String
+    READTEMPLATE 1 2
+    >
+
+Note: In the current version of the Dart code, the template is stored in a variable called templateBuffer with Uint8List type which has a size of 4096 (Double the size of the template as the hex code is represented in String format)
+
+#### Command '5' - Upload template from computer and verify
+
+Input: >5 or sending "5\n\r" through serial
+
+Output:
+
+    >5                #Upload template to sensor to verify
+    5
+    46704c...ffff1f29d8ff40 #Data sent by the computer from Dart's templateBuffer
+    FINGERREQUEST     #Request User to press finger on sensor
+    FINGERHOLD        #Request User to hold finger on sensor
+    OKIMAGE           #Image taken successfully
+    TEMPLATING        #Converting image to template
+    OKTEMPLATE        #Image converted to template successfully
+    OKMATCH           #Template match with uploaded template
+    READTEMPLATE 1 2
+    >
+
+#### Command '6' - Clear all models in sensor's flash memory
+
+Input: >6 or sending "6\n\r" through serial
+
+Output:
+
+    READTEMPLATE 1 2
+    >6                  #Delete all models in sensor
+    6
+    OKDELETE            #Deleted successfully
+    READTEMPLATE 0      #No template in sensor
+    >
+
+Note: 0 does not mean there exist a model in slot 0. Slot 0 does not exist and is not a valid slot.
+
+
