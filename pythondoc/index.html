@@ -714,7 +714,7 @@ READTEMPLATE 1 2
 </code></pre>
 <p>Note: In the current version of the Dart code, the template is stored in a variable called templateBuffer with Uint8List type which has a size of 4096 (Double the size of the template as the hex code is represented in String format)</p>
 <h4 id="command-5-upload-template-from-computer-and-verify">Command '5' - Upload template from computer and verify</h4>
-<p>Input: &gt;5 or sending "5\n\r" through serial</p>
+<p>Input: &gt;5 or send "5\n\r" through serial</p>
 <p>Output:</p>
 <pre><code>&gt;5                #Upload template to sensor to verify
 5
@@ -729,7 +729,7 @@ READTEMPLATE 1 2
 &gt;
 </code></pre>
 <h4 id="command-6-clear-all-models-in-sensors-flash-memory">Command '6' - Clear all models in sensor's flash memory</h4>
-<p>Input: &gt;6 or sending "6\n\r" through serial</p>
+<p>Input: &gt;6 or send "6\n\r" through serial</p>
 <p>Output:</p>
 <pre><code>READTEMPLATE 1 2
 &gt;6                  #Delete all models in sensor
