@@ -111,26 +111,15 @@ def get_fingerprint(finger):
     print('FINGERREQUEST')
 
     # User presses finger
-    while True:
+    # User presses finger
+    i = finger.get_image()
+    while i != adafruit_fingerprint_reduced.OK:
+        if supervisor.runtime.serial_bytes_available and i == adafruit_fingerprint_reduced.NOFINGER:
+            data = input().strip()
+            if data == 'CANCEL':
+                return False
+
         i = finger.get_image()
-        if i == adafruit_fingerprint_reduced.OK:
-            print('OKIMAGE')
-            break
-        if i == adafruit_fingerprint_reduced.NOFINGER:
-            # print_error(adafruit_fingerprint_reduced.NOFINGER)
-            if supervisor.runtime.serial_bytes_available:
-                data = input().strip()
-                if data == 'CANCEL':
-                    return False
-        elif i == adafruit_fingerprint_reduced.IMAGEFAIL:
-            print_error(adafruit_fingerprint_reduced.IMAGEFAIL)
-            return False
-        elif code == adafruit_fingerprint_reduced.PACKETRECIEVEERR:
-            print_error(adafruit_fingerprint_reduced.PACKETRECIEVEERR)
-            return False
-        else:
-            print_error(None)
-            return False
 
 
 

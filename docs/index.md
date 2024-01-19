@@ -3,7 +3,7 @@
 ## About the Project
 This project involves communicating from a computer to a Adafruit Trinket M0 board using Dart. The board is connected to our computer using the Micro USB port.
 
-Our goal is to talk to a R553 fingerprint sensor through the Trinket M0 board. Luckily, the sensor based its protocol on the Adafruit Fingerprint library, and we can use the library to communicate. Our Dart and Python code are developed to use most of the functions in the library and more importantly, send and receive fingerprint templates back to the computer.
+Our goal is to talk to a R553 fingerprint sensor through the Trinket M0 board. Luckily, the sensor based its protocol on the Adafruit Fingerprint library, and we can use the library to communicate with it. Our Dart and Python code are developed to use most of the functions in the library and more importantly, send and receive fingerprint templates back to the computer.
 
 The project is a framework or proof of concept for a Biometric Verification System with templates store in a database that can be use to verify users/customers/clients/etc. The Dart language also enables the developement of a mobile app on Android or IOS to use this system.
 
@@ -208,4 +208,15 @@ READTEMPLATE 1 2 3 5 8
         6
         OKDELETE
         READTEMPLATE 0
+        >
+
+7. Cancle taking fingerprint
+
+        READTEMPLATE 2
+        >2
+        2
+        FINGERREQUEST
+        ^[
+        CANCEL
+        READTEMPLATE 2
         >
