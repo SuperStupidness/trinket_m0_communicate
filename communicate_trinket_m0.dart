@@ -244,9 +244,10 @@ void main() async
     print('Displaying output from board...');
     fingerprintReader.stream.listen((data) async {
          //print('Recieved ${data} ${data.length}');
-            // Decode data into ascii and print it
+        // Decode data into ascii and print it
         for (var i in data)
         {
+            // Remove character that is not letter, number or punctuation. Permit \n
             if ((i >= 32) & (i < 127) | (i == 10))
             {
                 String char = String.fromCharCode(i);
@@ -257,16 +258,19 @@ void main() async
                     String line = stdin.readLineSync() ?? '';
                     if (line.compareTo('stop') == 0)
                     {
+                        //Exit program
                         subscription.cancel();
                         fingerprintReader.close();
                         exit(0);
                     } else if (line.compareTo('reset') == 0)
                     {
+                        // Send Ctrl+D to board
                         Uint8List sendBuffer = stringToUint8List('\x04'+'\r');
                         fingerprintPort.write(sendBuffer);
                         break;
                     } else if (line.compareTo('5') == 0)
                     {
+                        // Upload template to board
                         Uint8List sendBuffer = stringToUint8List(line+'\n'+'\r');
                         fingerprintPort.write(sendBuffer);
                         fingerprintPort.drain();
@@ -279,7 +283,8 @@ void main() async
                     } else if (line.compareTo('help') == 0)
                     {
                         printAvailableCommands();
-                        stdout.write('>');
+                        Uint8List sendBuffer = stringToUint8List('\r'+'\n');
+                        fingerprintPort.write(sendBuffer);
                     } else
                     {
                         Uint8List sendBuffer = stringToUint8List(line+'\n'+'\r');
@@ -288,9 +293,9 @@ void main() async
                 }
 
                 // Other data extraction/function section
-                // Save template data
                 if ((takeDataNextPacketFlag == 1) & (removeFirstByte == 0))
                 {
+                    // Save template data
                     if (length == 4096)
                     {
                         takeDataNextPacketFlag = 0;
@@ -308,36 +313,32 @@ void main() async
             }
         }
 
-        // Template data saving
+        // Check message section
         int dataPosition = checkIsMessage(data, 'OKDOWNLOAD');
         if ((dataPosition != -1) & (takeDataNextPacketFlag == 0))
         {
-
+            // Signal take fingerprint template
             takeDataNextPacketFlag = 1;
             removeFirstByte = 1;
             length = 0;
         }
 
-        // Cancle taking fingerprint if requested
         if (checkIsMessage(data, 'FINGERREQUEST') != -1)
         {
+            // Start listening to see if user want to cancle operation
             if (subscription.isPaused)
             {
                 subscription.resume();
             }
         } else if ((checkIsMessage(data, 'OKIMAGE') != -1) | (checkIsMessage(data, 'READTEMPLATE') != -1))
         {
+            // If finger is taken successfully, stop
             if (!subscription.isPaused)
             {
                 subscription.pause();
             }
         }
-
-        fingerprintPort.flush(SerialPortBuffer.output);
-
-        //print('');
     });
 
     fingerprintPort.dispose();
-    //print("This ran");
 }
