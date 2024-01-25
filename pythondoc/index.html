@@ -684,6 +684,22 @@ OKSTORAGE         #Model stored successfully
 READTEMPLATE 1 2  #Display all models stored on sensor by listing its slot. Currently in slot 1 and slot 2.
 &gt;                 #Command/Input request
 </code></pre>
+<p>Possible Errors:</p>
+<ul>
+<li>1 (PACKETRIEVEERR)</li>
+<li>2 (NOFINGER)</li>
+<li>3 (IMAGEFAIL)</li>
+<li>6 (IMAGEMESS)</li>
+<li>7 (FEATUREFAIL)</li>
+<li>10 (ENROLLMISMATCH)</li>
+<li>11 (BADLOCATION)</li>
+<li>21 (INVALIDIMAGE)</li>
+<li>24 (FLASHERR)</li>
+<li>87 (NUMARGUMENT)</li>
+<li>88 (LOCATIONVAL)</li>
+<li>89 (WRONGCOMMAND)</li>
+<li>CANCEL</li>
+</ul>
 <h4 id="command-2-identify-fingerprint">Command '2' - Identify fingerprint</h4>
 <p>Input: &gt;2 or send "2\n\r" through serial</p>
 <p>Output:</p>
@@ -699,6 +715,18 @@ OKSEARCH 1 100    #Model found in slot 1 with confidence 100
 READTEMPLATE 1 2
 &gt;
 </code></pre>
+<p>Possible Errors:</p>
+<ul>
+<li>1 (PACKETRIEVEERR)</li>
+<li>2 (NOFINGER)</li>
+<li>3 (IMAGEFAIL)</li>
+<li>6 (IMAGEMESS)</li>
+<li>7 (FEATUREFAIL)</li>
+<li>9 (NOTFOUND)</li>
+<li>21 (INVALIDIMAGE)</li>
+<li>89 (WRONGCOMMAND)</li>
+<li>CANCEL</li>
+</ul>
 <h4 id="command-3-delete-fingerprint">Command '3' - Delete fingerprint</h4>
 <p>Input: &gt;3 [slot number] or send "3 [slot number]\n\r" through serial</p>
 <p>Output:</p>
@@ -708,6 +736,15 @@ OKDELETE          #Model deleted successfully
 READTEMPLATE 2
 &gt;
 </code></pre>
+<p>Possible Errors:</p>
+<ul>
+<li>1 (PACKETRIEVEERR)</li>
+<li>11 (BADLOCATION)</li>
+<li>24 (FLASHERR)</li>
+<li>87 (NUMARGUMENT)</li>
+<li>88 (LOCATIONVAL)</li>
+<li>89 (WRONGCOMMAND)</li>
+</ul>
 <h4 id="command-4-download-template-to-computer">Command '4' - Download template to computer</h4>
 <p>Input: &gt;4 or send "4\n\r" through serial</p>
 <p>Output:</p>
@@ -734,6 +771,12 @@ b'46704c...ffff1f29d8ff40'  #Hex data printed to serial port as String
 READTEMPLATE 1 2
 &gt;
 </code></pre>
+<p>Possible Error:</p>
+<ul>
+<li>Same as Command 1 as it uses command 1 first</li>
+<li>90 (DOWNLOADFAIL)</li>
+<li>CANCEL</li>
+</ul>
 <p>Note: In the current version of the Dart code, the template is stored in a variable called templateBuffer with Uint8List type which has a size of 4096 (Double the size of the template as the hex code is represented in String format)</p>
 <h4 id="command-5-upload-template-from-computer-and-verify">Command '5' - Upload template from computer and verify</h4>
 <p>Input: &gt;5 or send "5\n\r" through serial</p>
@@ -750,6 +793,19 @@ OKMATCH           #Template match with uploaded template
 READTEMPLATE 1 2
 &gt;
 </code></pre>
+<p>Possible Errors:</p>
+<ul>
+<li>1 (PACKETRIEVEERR)</li>
+<li>2 (NOFINGER)</li>
+<li>3 (IMAGEFAIL)</li>
+<li>6 (IMAGEMESS)</li>
+<li>7 (FEATUREFAIL)</li>
+<li>21 (INVALIDIMAGE)</li>
+<li>89 (WRONGCOMMAND)</li>
+<li>91 (UPLOADFAIL)</li>
+<li>92 (MATCHFAIL)</li>
+<li>CANCEL</li>
+</ul>
 <h4 id="command-6-clear-all-models-in-sensors-flash-memory">Command '6' - Clear all models in sensor's flash memory</h4>
 <p>Input: &gt;6 or send "6\n\r" through serial</p>
 <p>Output:</p>
@@ -761,6 +817,13 @@ READTEMPLATE 0      #No template in sensor
 &gt;
 </code></pre>
 <p>Note: 0 does not mean there exist a model in slot 0. Slot 0 does not exist and is not a valid slot.</p>
+<p>Possible Errors:</p>
+<ul>
+<li>1 (PACKETRIEVEERR)</li>
+<li>11 (BADLOCATION)</li>
+<li>24 (FLASHERR)</li>
+<li>89 (WRONGCOMMAND)</li>
+</ul>
 <h3 id="error-printing">Error Printing</h3>
 <p><strong>Format</strong>: ERROR [error number]</p>
 <table>
@@ -854,7 +917,7 @@ READTEMPLATE 0      #No template in sensor
 </tr>
 <tr>
 <td>WRONGCOMMAND</td>
-<td>0x59 (59)</td>
+<td>0x59 (89)</td>
 <td>Command does not exist</td>
 </tr>
 </tbody>

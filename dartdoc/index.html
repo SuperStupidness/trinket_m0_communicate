@@ -692,6 +692,7 @@
 <p>First one is fingerprintReader Stream. This is the main loop of the program and is shown in the flowchart. This event loop will start when data is sent from the board using print().</p>
 <p>The second one is InterruptCheckStream. This is in the process rectangle on the 'Yes' path of 'Is data a certain message' decision block. It is a copy of the stdin stream by setting stdin into a broadcast stream. This stream activates when user types and hits the ENTER key. It will then check whether the input is ESC and send a cancel message to the board to signal stop waiting for fingerprint. <strong>This stream will only start listening when Dart receives <a href="../pythondoc/#status-printing">FINGERREQUEST</a> is and pause if Dart receives <a href="../pythondoc/#success-code-printing">OKIMAGE</a>.</strong></p>
 <h3 id="api">API</h3>
+<p>This section list all the functions in the Dart code.</p>
 <h4 id="listavailableport">listAvailablePort</h4>
 <pre><code>int listAvailablePort()
 </code></pre>
