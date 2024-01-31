@@ -30,6 +30,25 @@ The project is done in **Linux** (Mint) due to libserialport library being easil
 
 
 ### Updates
+
+Updates 31/1/2024:
+- Add display support using adafruit_displayio_ssd1306 library
+- Change commands to output message to display
+- Add display functions in custom_fingerprint_lib to show text and logo (text, mutiple text, scroll text)
+- Add bitmap images to display: company logo, checkmark, crossmark, triple dot
+- Add exception handling and more checks for upload template
+- Add exception handling if there is no display
+- Small fix in enroll to check if there is a display.
+- Fix sensor init function. Now, it will probably set sensor's baudrate correctly
+- Add more error codes for upload
+- Doc:
+      - Add Seeed Studio RP2040 board to doc
+      - Add generating bitmap guide
+      - Add display guide
+      - Document sensor init function does not scan and reconnect if data package size is changed (manual intervention require)
+      - Document display function
+      - Add video examples
+
 Updates 18/1/2024:
 - Download and Upload template is now functional. Template is stored in templateBuffer variable in Dart which can be written to a file or save in a database.
 - Implement interrupt finger request by Esc then Enter

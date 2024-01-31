@@ -282,6 +282,19 @@ class Adafruit_Fingerprint:
         self._send_packet([_EMPTY])
         return self._get_packet(12)[0]
 
+    def set_led(
+        self, color: int = 1, mode: int = 3, speed: int = 0x80, cycles: int = 0
+    ) -> int:
+        """LED function -- only for R503 Sensor.
+        Parameters: See User Manual for full details
+        color: 1=red, 2=blue, 3=purple
+        mode: 1-breathe, 2-flash, 3-on, 4-off, 5-fade_on, 6-fade-off
+        speed: animation speed 0-255
+        cycles: numbe of time to repeat 0=infinite or 1-255
+        Returns the packet error code or success"""
+        self._send_packet([_SETAURA, mode, speed, color, cycles])
+        return self._get_packet(12)[0]
+
     ##################################################
 
     def _get_packet(self, expected: int) -> List[int]:

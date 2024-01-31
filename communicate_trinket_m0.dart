@@ -265,17 +265,20 @@ void main() async
                     } else if (line.compareTo('reset') == 0)
                     {
                         // Send Ctrl+D to board
-                        Uint8List sendBuffer = stringToUint8List('\x04'+'\r');
+                        Uint8List sendBuffer = stringToUint8List('\x04');
                         fingerprintPort.write(sendBuffer);
-                        break;
                     } else if (line.compareTo('5') == 0)
                     {
                         // Upload template to board
                         Uint8List sendBuffer = stringToUint8List(line+'\n'+'\r');
                         fingerprintPort.write(sendBuffer);
                         fingerprintPort.drain();
-                        fingerprintPort.write(templateBuffer);
-                        fingerprintPort.drain();
+                        if (length == 4096)
+                        {
+                            fingerprintPort.write(templateBuffer);
+                            fingerprintPort.drain();
+                        }
+
                         sendBuffer = stringToUint8List('\n'+'\r');
                         fingerprintPort.write(sendBuffer);
                         //print(templateBuffer);
