@@ -94,6 +94,10 @@ Update 7/1/2024:
           memory checking, converted load, get model to download model function
           Still not functional due to MemoryError on get_fpdata()
 
+### Documentation
+
+Github Page [here](https://superstupidness.github.io/trinket_m0_communicate/)
+
 ### Reference and Resources
 Flutter version of libserialport (Dart) is available [here](https://pub.dev/packages/flutter_libserialport)
 
