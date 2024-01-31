@@ -9,6 +9,8 @@ Over on the trinket m0, it continuously run code.py. Code.py is designed to talk
 
 The project is done in **Linux** (Mint) due to libserialport library being easily downloadable. Hence, the how to run section, especially step 3, **does not apply to Window or MacOS**.
 
+**Current implementation: Seeed Studio XIAO RP2040 with 0.91 inch OLED with SSD1306 driver**
+
 ### How to Run
 
 1. Download Dart SDK
@@ -22,6 +24,9 @@ The project is done in **Linux** (Mint) due to libserialport library being easil
             sudo apt install libserialport-dev
 
 5.  Copy code.py and lib folder into Trinket M0/Raspberry Pi Pico
+
+      * If there is a SSD1306 display connected, copy the img folder onto the board.
+
 6.  Run the dart code
 
             dart communicate_trinket_m0.dart
@@ -42,6 +47,7 @@ Updates 31/1/2024:
 - Fix sensor init function. Now, it will probably set sensor's baudrate correctly
 - Add more error codes for upload
 - Doc:
+
       - Add Seeed Studio RP2040 board to doc
       - Add generating bitmap guide
       - Add display guide
