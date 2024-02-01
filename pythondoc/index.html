@@ -768,7 +768,7 @@
 <ul>
 <li><a href="https://www.raspberrypi.com/products/raspberry-pi-pico/">Raspberry Pi Pico</a></li>
 <li><a href="https://www.adafruit.com/product/3500">Trinket M0</a></li>
-<li><a href="https://wiki.seeedstudio.com/XIAO-RP2040/">Seeed Studio XIAO RP2040</a> (currently used)</li>
+<li><a href="https://wiki.seeedstudio.com/XIAO-RP2040/">Seeed Studio XIAO RP2040</a> (currently use)</li>
 </ul>
 <h3 id="circuitpython-version">CircuitPython Version</h3>
 <ul>
@@ -822,11 +822,21 @@
 </ul>
 </li>
 </ul>
-<p>Note: The display is completely optional and the code would still work if there is no display.</p>
+<p>Note: The display is completely optional and the code would still work fine if there is no display.</p>
+<figure>
+    <img src="../assets/xiao_pinout.png" width="800" height="800" alt="xiao rp2040 pinout">
+    <figcaption>Seeed Studio XIAO RP2040 pinout. Source: <a href="https://wiki.seeedstudio.com/XIAO-RP2040/">Seeed Studio wiki</a> </figcaption>
+</figure>
+
+<figure>
+    <img src="../assets/oled_display.png" width="500" height="500" alt="oled display">
+    <figcaption>0.91 inch I2C OLED display. Source: <a href="https://aliexpress.com/item/1005006365875553.html">Aliexpress page</a> </figcaption>
+</figure>
+
 <h2 id="code-acknowledgement">Code Acknowledgement</h2>
 <p><code>code.py</code> and <code>custom_finger_lib.py</code> are referenced from Adafruit CircuitPython Fingerprint github page (<a href="https://github.com/adafruit/Adafruit_CircuitPython_Fingerprint/tree/main">Python</a> and <a href="https://github.com/adafruit/Adafruit-Fingerprint-Sensor-Library/tree/master">C++</a>), more specifically <code>examples/fingerprint_r503.py</code> and <code>examples/fingerprint_template_file_compare.py</code>.</p>
 <p><code>adafruit_fingerprint_reduced.py</code> is a copy from <code>adafruit_fingerprint.py</code> with unused functions removed. <code>adafruit_fingerprint.cpp</code> was also useful for listing all the possible error codes the sensor can return when using the functions in the library.</p>
-<p>The display use later in the project uses <code>adafruit_displayio_ssd1306.py</code> driver and other displayio library like <code>adafruit_displayio_text</code> to display text.</p>
+<p>The display uses <code>adafruit_displayio_ssd1306.py</code> driver.</p>
 <p>Credit to the authors of these library codes.</p>
 <h2 id="python-code">Python Code</h2>
 <h3 id="set-up">Set up</h3>
@@ -844,21 +854,21 @@
 <p>Create finger object from <code>adafruit_fingerprint_reduced.py</code></p>
 </li>
 <li>
-<p>If the code cannot establish connection with the sensor even after trying different baudrate then the code would simply end.</p>
-</li>
-</ol>
-<pre><code>    Code done running.
-
-    Press any key to enter the REPL. Use CTRL-D to reload.
+<p>If the code cannot establish connection with the sensor even after trying different baudrate then the code will simply end later.</p>
+<p>```
+    Code done running.</p>
+<pre><code>Press any key to enter the REPL. Use CTRL-D to reload.
 </code></pre>
-<ol>
-<li>Go to display set up</li>
+<p>```</p>
+</li>
+<li>
+<p>Go to display set up</p>
+</li>
 </ol>
 <p>*<em>Each board has a different name for TX and RX pins. We can check the pin names by going into REPL and do</em></p>
 <pre><code>    &gt;&gt;&gt;import board
     &gt;&gt;&gt;dir(board)
 </code></pre>
-<p><em>It might be necessary to change this section according to your board</em></p>
 <h4 id="091-inch-oled-optional">0.91 inch OLED (Optional)</h4>
 <ol>
 <li>Create I2C object using board.I2C()<strong>*</strong></li>
@@ -871,7 +881,7 @@
 <li>Display company name and logo for 1s</li>
 <li>Go to main loop</li>
 </ol>
-<p>*<em>Some board might not support this function. An alternative is busio.I2C() which does the same thing but require SDA and SCL pin. Refer to the section above and the datasheet to check the I2C pin name. This section might throw an error if there is no pull up resistor for the board.</em></p>
+<p>*<em>Some board might not support this function. An alternative is busio.I2C() which does the same thing but requires SDA and SCL pin. Refer to the section above and the datasheet to check the I2C pin name. This section might throw an error if there is no pull up resistor for the board.</em></p>
 <p><em>Note: For a better guide on using the display in circuitpython, use this <a href="https://learn.adafruit.com/adafruit-oled-featherwing/python-usage">link</a> from adafruit</em></p>
 <h3 id="calling-functions">Calling Functions</h3>
 <p>Dart code can call functions by sending</p>
@@ -1277,7 +1287,7 @@ READTEMPLATE 0      #No template in sensor
 <h4 id="creating-bitmap-image-linux">Creating Bitmap image (Linux)</h4>
 <ol>
 <li>Download GIMP</li>
-<li>Download image that needs to be converted to bitmap (.bmp)</li>
+<li>Download image that needs to be converted to bitmap</li>
 <li>Open image in GIMP (top left corner: File -&gt; Open)</li>
 <li>Crop the image to the desired size (Shift + C). Keep as little margin as possible as we are going to resize the image down smaller.</li>
 <li>
@@ -1355,11 +1365,12 @@ READTEMPLATE 0      #No template in sensor
 <li>
 <p>Go to the top bar: Colors -&gt; Map -&gt; Rearrange Colormap. Drag the color white to the first position. Don't worry about the number as it will change when we click OK. The first position will be considered as the 'transparent' color in displayio.</p>
 </li>
-<li>Finally, go to the top bar: File -&gt; Export as. And change the file extension to .bmp. Ex: image_name.png -&gt; image_name.bmp</li>
+<li>Finally, go to the top bar: File -&gt; Export As. And change the file extension to .bmp. Ex: image_name.png -&gt; image_name.bmp</li>
 </ol>
 <p><em>Note: You can change step 5, 6 and 7 to match your display color specification.</em></p>
 <h4 id="displaying-text-and-bitmap-image">Displaying Text and Bitmap Image</h4>
 <p>We made three functions to easily display text and image in custom_finger_lib.py. They only differ by the way they display text.</p>
+<p>There is a assumption that the image is 32 x 32 (max) and the font is termialio.Font with scale = 2. Our layout is image on the left and text next to the image on the right. Of course, this can be changed in the library to fit your display. Examples are shown in the <a href="https://superstupidness.github.io/trinket_m0_communicate/#video">Introduction page</a></p>
 <ol>
 <li>
 <p><code>def display_text_and_logo(splash, text, logo_file)</code></p>
@@ -1373,7 +1384,7 @@ READTEMPLATE 0      #No template in sensor
 <ul>
 <li>text_area: ScrollingLabel object that can be used to scroll the text if it exceeds the display length</li>
 </ul>
-<p>Note: This will display text and logo indefinitely until another display function is called. Text can be scrolled using</p>
+<p>Note: This will display text and logo indefinitely until another display function is called. If logo_file is None, the previous image won't be removed. Text can be scrolled using</p>
 <pre><code>```
 while True:
 
@@ -1408,7 +1419,14 @@ while True:
 <ul>
 <li>text_area: ScrollingLabel object that can be used to scroll the text</li>
 </ul>
-<p>Note: This is used in when the sensor is requesting fingerprint. The function is called and the output is put in a while loop to constantly display the message.</p>
+<p>Note: This is used when the sensor is requesting fingerprint. The function is called and the output is put in a while loop to constantly display the message.</p>
+<pre><code>```
+while True:
+    if text_area is not None:    # Check to see if there is a display
+        text_area.update()
+
+```
+</code></pre>
 </li>
 </ol></div>
 
