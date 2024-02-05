@@ -18,7 +18,7 @@ The project is done in **Linux** (Mint) due to libserialport library being easil
 * Soldering kit
 
 <figure>
-    <img src="finished_product.jpg" width="500" height="500"
+    <img src="./finished_product.jpg" width="500" height="500"
          alt="product">
     <figcaption>Microcontroller Board fully connected. More detail in <a href="https://superstupidness.github.io/trinket_m0_communicate/pythondoc/">Documentation</a></figcaption>
 </figure>
