@@ -1,15 +1,34 @@
 ## **Communicate to Trinket M0 via Dart**
 
 ### Description
-The set up requires the computer to be connected to the trinket m0 using micro USB on the trinket board. The trinket m0 must not be connected to any serial terminal when the Dart code connects to the trinket board.
 
-The Dart program first lists all the ports available to connect, then it establishes the connection to the selected board. After opening the connection, it probes the trinket m0 by sending '\r' through the serial port through which the trinket m0 responds. The programs will continue this call and response loop with the trinket m0 until it exit via Ctrl + C or Ctrl + D interrupt from the user.
+The project involves communicating with a Microcontroller Board using Dart. The board uses CircuitPython and controls a R557 fingerprint sensor. The end goal of the project is for a PC to interact with the fingerprint sensor, downloading and uploading template from and to it. The choice of using Dart is to enable Android and IOS app development allowing mobile devices to communicate with the fingerprint sensor too.
 
-Over on the trinket m0, it continuously run code.py. Code.py is designed to talk to a fingerprint sensor using Adafruit Fingerprint library. The library is further reduced to minimize memory usage. All functions are usable except for download_model as it throws MemoryError (trinket m0 may not be suitable here).
+The project is done in **Linux** (Mint) due to libserialport library being easily downloadable. Hence, the how to run section **does not apply to Window or MacOS**.
 
-The project is done in **Linux** (Mint) due to libserialport library being easily downloadable. Hence, the how to run section, especially step 3, **does not apply to Window or MacOS**.
+### Hardware Requirement
 
-**Current implementation: Seeed Studio XIAO RP2040 with 0.91 inch OLED with SSD1306 driver**
+**Current implementation:**
+
+* Seeed Studio XIAO RP2040
+* 0.91 inch OLED that is compatible with SSD1306 (adadfruit) driver
+* USB C to USB A cable
+* Laptop or PC with USB A port
+* Female header wire for display
+* Soldering kit
+
+<figure>
+    <img src="finished_product.jpg" width="500" height="500"
+         alt="product">
+    <figcaption>Microcontroller Board fully connected. More detail in <a href="https://superstupidness.github.io/trinket_m0_communicate/pythondoc/">Documentation</a></figcaption>
+</figure>
+
+Tested Board:
+
+* Trinket M0 (Not suitable due to not enough RAM)
+* Raspberry Pi Pico (I2C pull up resistor needed if display is used)
+
+*Note: We found that board's with RP2040 chip is sufficient our CircuitPython code. In terms of display and I2C, make sure they have built in pull up resistor.*
 
 ### How to Run
 
@@ -33,6 +52,7 @@ The project is done in **Linux** (Mint) due to libserialport library being easil
 
 7.  (Optional) If the Dart code shows that the board is in REPL when first booted up, use command 'reset' by typing it in the terminal to restart the python code.
 
+*Note: During our app developement, we found that usb_serial (flutter) library works great as we don't need to download libserialport library. Consider usb_serial as an alternative to libserialport.*
 
 ### Updates
 
@@ -47,7 +67,6 @@ Updates 31/1/2024:
 - Fix sensor init function. Now, it will probably set sensor's baudrate correctly
 - Add more error codes for upload
 - Doc:
-
       - Add Seeed Studio RP2040 board to doc
       - Add generating bitmap guide
       - Add display guide
