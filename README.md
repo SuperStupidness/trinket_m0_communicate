@@ -30,7 +30,7 @@ Tested Board:
 * Trinket M0 (Not suitable due to not enough RAM)
 * Raspberry Pi Pico (I2C pull up resistor needed if display is used)
 
-*Note: We found that boards with RP2040 chip is sufficient for our CircuitPython code. In terms of display and I2C, make sure they have built in pull up resistor.*
+*Note: We found that boards with RP2040 chip work great with our CircuitPython code due to their large RAM. In terms of display and I2C, make sure the board has built in pull up resistor.*
 
 ### How to Run
 
