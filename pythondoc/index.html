@@ -847,7 +847,8 @@
 <p>Connect to sensor using UART object</p>
 <ul>
 <li>If it is unsucessful, it will try baudrate 9600*N with N from 1 to 12.</li>
-<li>If it is successful, it will set the desired security level and data package size</li>
+<li>If it is successful, it will set the desired security level and data package size.</li>
+<li>Note: When changing data package size, the code must be change to connect using that size immediately as the init function does not scan for data package size.</li>
 </ul>
 </li>
 <li>
