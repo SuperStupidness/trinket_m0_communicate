@@ -18,9 +18,11 @@ The project is done in **Linux** (Mint) due to libserialport library being easil
 * Soldering kit
 
 <figure>
-    <img src="./finished_product.jpg" width="500" height="500"
+    <img src="./finished_product.jpg" width="400" height="300"
          alt="product">
     <figcaption>Microcontroller Board fully connected. More detail in <a href="https://superstupidness.github.io/trinket_m0_communicate/pythondoc/">Documentation</a></figcaption>
+    <p>
+    </p>
 </figure>
 
 Tested Board:
@@ -28,7 +30,7 @@ Tested Board:
 * Trinket M0 (Not suitable due to not enough RAM)
 * Raspberry Pi Pico (I2C pull up resistor needed if display is used)
 
-*Note: We found that board's with RP2040 chip is sufficient our CircuitPython code. In terms of display and I2C, make sure they have built in pull up resistor.*
+*Note: We found that board's with RP2040 chip is sufficient for our CircuitPython code. In terms of display and I2C, make sure they have built in pull up resistor.*
 
 ### How to Run
 
