@@ -58,6 +58,9 @@ Tested Board:
 
 ### Updates
 
+Update 14/2/2024:
+- Add input buffer clearing at the begining of the main loop to avoid stacking \n\n\n in the buffer after reset command
+
 Updates 31/1/2024:
 - Add display support using adafruit_displayio_ssd1306 library
 - Change commands to output message to display

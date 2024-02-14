@@ -87,8 +87,12 @@ else:
 
 # Main program loop here
 while True and init_okay:
+    # Clear any unread input
+    if console.in_waiting > 0:
+        console.read(console.in_waiting)
+
     finger_lib.display_text_and_logo(splash, "READY", company_logo_file)
-    # Led commands not available on R553 so this does nothing
+    # Led commands not available on R557 so this does nothing
     finger.set_led(color=default_led_color, mode=default_led_mode)
     # Display available template on sensor
     finger_lib.show_template(finger)
